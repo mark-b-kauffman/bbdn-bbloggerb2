@@ -1,4 +1,4 @@
-package dcbb.common;
+package com.blackboard.bbloggerb2;
 
 public abstract interface Constants
 {

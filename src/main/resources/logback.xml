@@ -24,13 +24,13 @@
     </encoder>
   </appender>
 
-  <logger name="org.springframework">
+  <logger name="org.springframework" additivity="false">
         <level value="error" />
         <appender-ref ref="FILE" />
   </logger>
 
   
-  	<logger name="com.blackboard.bbloggerb2">
+  	<logger name="com.blackboard.bbloggerb2" additivity="false">
 		<level value="info" />
 		<appender-ref ref="FILE" />
 	</logger>

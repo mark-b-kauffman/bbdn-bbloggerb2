@@ -1,6 +1,5 @@
 package com.blackboard.bbloggerb2;
 
-import dcbb.common.DcbbLOGGER;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -62,7 +61,7 @@ public class HomeController {
         @RequestMapping(value = "/learnlog", method = RequestMethod.GET)
 	public String learnlog(Locale locale, Model model) {
 		// MyLogger.info("Using Learn Logger! The client locale is {}.", locale);
-		
+		logger.info("Welcome home from /learnlog! The client locale is {}.", locale);
 		Date date = new Date();
 		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
 		
@@ -70,7 +69,7 @@ public class HomeController {
 		
 		model.addAttribute("serverTime", formattedDate );
 		
-                DcbbLOGGER.getDcbbLogger().logInfo(formattedDate + "  Info from learnLog" );
+                MybbLOGGER.getDcbbLogger().logInfo(formattedDate + "  Info from learnLog" );
                 
 		return "learnlog";
 	}

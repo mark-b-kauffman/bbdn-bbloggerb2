@@ -1,27 +1,29 @@
-package dcbb.common;
+package com.blackboard.bbloggerb2;
 
 import blackboard.platform.log.Log;
 import blackboard.platform.log.LogService;
 import blackboard.platform.log.LogService.Verbosity;
 import blackboard.platform.log.LogServiceFactory;
 import blackboard.platform.plugin.PlugInUtil;
-/* Not used for demonstrating the Log LogService issue.
-import com.blackboard.bblogger2.bbbridge.web.dao.impl.DcbbConfigIPDaoImpl;
-import com.blackboard.bblogger2.web.domain.DcbbConfigIP;
-import com.blackboard.bblogger2.common.util.DcbbUtil;
-*/
+
 import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class DcbbLOGGER
+import org.slf4j.Logger; // We'll use logback to log what this logging class is doing to troubleshoot.
+import org.slf4j.LoggerFactory;
+
+public class MybbLOGGER
 {
-  private static DcbbLOGGER DCBBLOGGER = null;
+    
+  private static final Logger logback = LoggerFactory.getLogger(MybbLOGGER.class);  
+  
+  private static MybbLOGGER DCBBLOGGER = null;
   private static LogService LOGGER = null;
-  // private static DcbbConfigIPDaoImpl configIPDao = null;
-  // private static DcbbConfigIP configIP = null;
+  private static Log B2LOG = null;  // MBK - added so we can only create the log file when it doesn't exist.
+
   private static String loglevel;
   private String logName = "bblogger.log.txt";
   File logsDirectory = null;
@@ -29,19 +31,9 @@ public class DcbbLOGGER
   
   public static String getLoglevel() // We won't use this for this test. Just return the DEBUG log level.
   {
-    /*if ((loglevel == null) || (loglevel.trim().equals("null")))
-    { */
-      loglevel = "DEBUG"; 
-      /* configIPDao = new DcbbConfigIPDaoImpl();
-      List<DcbbConfigIP> configIPs = configIPDao.getAll();
-      if ((configIPs != null) && (configIPs.size() > 0))
-      {
-        configIP = (DcbbConfigIP)configIPs.get(0);
-        if (configIP != null) {
-          loglevel = configIP.getLogLevelType();
-        }
-      } 
-    } */
+
+    loglevel = "DEBUG"; 
+
     return loglevel;
   }
   
@@ -52,20 +44,20 @@ public class DcbbLOGGER
     }
   }
   
-  public DcbbLOGGER()
+  public MybbLOGGER()
   {
-    if (PlugInUtil.getLogDirectory("bbdn", "bblogger") != null) {
+    if (PlugInUtil.getLogDirectory("bbdn", "bbloggerb2") != null) {
       this.pluginLogPath = PlugInUtil.getLogDirectory("bbdn", "bbloggerb2").getAbsolutePath();
     } else {
       this.pluginLogPath = "";
     }
   }
   
-  public static DcbbLOGGER getDcbbLogger()
+  public static MybbLOGGER getDcbbLogger()
   {
     if (DCBBLOGGER == null)
     {
-      DCBBLOGGER = new DcbbLOGGER();
+      DCBBLOGGER = new MybbLOGGER();
       LOGGER = LogServiceFactory.getInstance();
     }
     return DCBBLOGGER;
@@ -94,33 +86,57 @@ public class DcbbLOGGER
   
   private void logMessage(String logMessage, LogService.Verbosity logLevel)
   {
-    Log B2LOG = null;
-    B2LOG = LOGGER.getConfiguredLog(this.logName);
-    String pluginLogFile = this.pluginLogPath + "\\" + this.logName;
-    if ((B2LOG == null) || ((this.pluginLogPath != "") && (!B2LOG.getLogFileName().equalsIgnoreCase(pluginLogFile))))
+    logback.info("Enter logMessage(). this.logName:" + this.logName);
+    String B2LOGlogFileName = "";
+    
+    String pluginLogFile = this.pluginLogPath + "/" + this.logName; // MBK was using DOS style path. \\
+    logback.info("In logMessage. Set pluginLogFile="+pluginLogFile);
+    
+    if (B2LOG != null)
+        B2LOGlogFileName = B2LOG.getLogFileName();
+    
+    logback.info("In logMessage. B2LOG.getLogFileName():"+ B2LOGlogFileName +  "comparing with pluginLogFile...");
+   
+    if ((B2LOG == null) || ((this.pluginLogPath != "") && (!B2LOGlogFileName.equalsIgnoreCase(pluginLogFile))))
     {
-      createLogFile();
-      B2LOG = LOGGER.getConfiguredLog(this.logName);
+        logback.info("logMessage calling createLogFile()");
+        createLogFile();
+        logback.info("logMessage back from createLogFile()");
+        B2LOG = LOGGER.getConfiguredLog(this.logName);
     }
+    logback.info("logMessage calling Log.log()");
     B2LOG.log(logMessage, logLevel);
+    logback.info("Exit logMessage()");
   }
   
   private void createLogFile()
   {
+    logback.info("Enter createLogFile()");
     try
     {
+      logback.info("createLogFile calling PlugInUtil.getLogDirectory");
       this.logsDirectory = PlugInUtil.getLogDirectory("bbdn", "bbloggerb2");
+      logback.info("createLogFile this.logsDirectory String Value:" + this.logsDirectory.toString());
       if (!this.logsDirectory.isDirectory()) {
+        logback.info("createLogFile this.logsDirectory.isDirectory was FALSE");
+        logback.info("createLogFile calling this.logsDirectory.mkdir()"); 
         this.logsDirectory.mkdir();
       } else {
-        // cleanUpLogFiles();
+        // Nothing here... no more cleanUpLogFiles();
       }
+      logback.info("createLogFile calling() new File("+ this.logsDirectory + "/" + this.logName);
       File logsFile = new File(this.logsDirectory + "/" + this.logName);
+      logback.info("createLogFile() calling LogService.defineNewFileLog with logName:" + this.logName + " and logFilePath:" +logsFile.toString());
       LOGGER.defineNewFileLog(this.logName, logsFile.toString(), LogService.Verbosity.DEBUG, false);
     }
     catch (Exception e)
     {
+      logback.info("createLofFile() CAUGHT EXCEPTION");
       e.printStackTrace();
+      if (e.getLocalizedMessage() != null)
+        logback.info(e.getLocalizedMessage());
+      else
+        logback.info("createMessage() e.localizedMessage was null");
     }
   }
   
@@ -200,4 +216,4 @@ public class DcbbLOGGER
       }
     }
   } */
-} //public class DcbbLOGGER
+} //public class MybbLOGGER
