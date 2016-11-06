@@ -1,4 +1,4 @@
-Spring MVC B2
+BBLOGGER B2
 =====================
 
 This project is based from the Spring Tool Suite (STS) Spring MVC project. We've added a bb-manifest.xml and an example of a view that uses the Blackboard Tags to render a page that has the look and feel of other Blackboard Learn pages.
