@@ -160,7 +160,7 @@ public class MybbLOGGER
         // Nothing here... no more cleanUpLogFiles();
       }
       // 1.5.7 used defineNewFileLog only.  1.5.8+ will use both new File( and defineNewFileLog
-      logback.info("createLogFile calling() new File("+ this.logsDirectory + File.separator + this.logName); // 1.6.0 using File.separator
+      logback.info("createLogFile calling() new File("+ this.logsDirectory + File.separator + this.logName); // 1.6.0 will be using File.separator
       File logsFile = new File(this.logsDirectory + File.separator + this.logName);
 
       logback.info("createLogFile() calling LogService.defineNewFileLog with logName:" + this.logName + " and logFilePath:" +logsFile.toString());
