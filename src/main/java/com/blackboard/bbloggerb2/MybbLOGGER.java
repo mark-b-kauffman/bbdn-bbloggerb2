@@ -27,6 +27,11 @@ package com.blackboard.bbloggerb2;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// READ CAREFULLY! There are two loggers used in this class. The first is using the Blackboard Java APIs, Log and LogService.
+// The second is using slf4j and Logback. The second logs to the blackboard/logs/custom directory and is used to keep track of everything 
+// the code does with the first. The reason for this is that is so that we can follow the logic this class uses to create and log to 
+// a file using the Learn Log and LogService classes.
+
 import blackboard.platform.log.Log;
 import blackboard.platform.log.LogService;
 import blackboard.platform.log.LogService.Verbosity;
@@ -39,7 +44,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.slf4j.Logger; // We'll use logback to log what this logging class is doing to troubleshoot.
+import org.slf4j.Logger; // We'll use logback to log what this logging class is doing for troubleshooting.
 import org.slf4j.LoggerFactory;
 
 public class MybbLOGGER
@@ -48,7 +53,7 @@ public class MybbLOGGER
   private static final Logger logback = LoggerFactory.getLogger(MybbLOGGER.class);  
   
   private static MybbLOGGER ABBLOGGER = null;
-  private static LogService LOGGER = null;
+  private static LogService LOGSERVICE = null; // Changed this from LOGGER to LOGSERVICE FOR CLARITY. MBK
   private static Log B2LOG = null;  // MBK - added so we can only create the log file when it doesn't exist.
 
   private static String loglevel;
@@ -76,16 +81,16 @@ public class MybbLOGGER
     if (PlugInUtil.getLogDirectory("bbdn", "bbloggerb2") != null) {
       this.pluginLogPath = PlugInUtil.getLogDirectory("bbdn", "bbloggerb2").getAbsolutePath();
     } else {
-      this.pluginLogPath = "";
+      this.pluginLogPath = ""; // Something really went wrong here if this didn't run on startup...
     }
   }
   
-  public static MybbLOGGER getBbLogger()
+  public static MybbLOGGER getBbLogger() // Define a singelton logging class.
   {
     if (ABBLOGGER == null)
     {
       ABBLOGGER = new MybbLOGGER();
-      LOGGER = LogServiceFactory.getInstance();
+      LOGSERVICE = LogServiceFactory.getInstance();
     }
     return ABBLOGGER;
   }
@@ -114,22 +119,25 @@ public class MybbLOGGER
   private void logMessage(String logMessage, LogService.Verbosity logLevel)
   {
     logback.info("Enter logMessage(). this.logName:" + this.logName);
-    String B2LOGlogFileName = "";
+    String B2LOGlogFileName = "";   
+    String pluginLogFile = this.pluginLogPath + File.separator + this.logName; 
     
-    String pluginLogFile = this.pluginLogPath + "/" + this.logName; // MBK was using DOS style path. \\
+    
     logback.info("In logMessage. Set pluginLogFile="+pluginLogFile);
     
     if (B2LOG != null)
         B2LOGlogFileName = B2LOG.getLogFileName();
+    else
+        logback.info("B2LOG was NULL.");
     
-    logback.info("In logMessage. B2LOG.getLogFileName():"+ B2LOGlogFileName +  "comparing with pluginLogFile...");
+    logback.info("In logMessage. B2LOG.getLogFileName():"+ B2LOGlogFileName +  " pluginLogFile:"+pluginLogFile);
    
-    if ((B2LOG == null) || ((this.pluginLogPath != "") && (!B2LOGlogFileName.equalsIgnoreCase(pluginLogFile))))
+    if ((B2LOG == null) || ((pluginLogPath != "") && (!B2LOGlogFileName.equalsIgnoreCase(pluginLogFile)))) // added || back for 1.6.0
     {
         logback.info("logMessage calling createLogFile()");
         createLogFile();
         logback.info("logMessage back from createLogFile()");
-        B2LOG = LOGGER.getConfiguredLog(this.logName);
+        B2LOG = LOGSERVICE.getConfiguredLog(this.logName);
     }
     logback.info("logMessage calling Log.log()");
     B2LOG.log(logMessage, logLevel);
@@ -142,7 +150,7 @@ public class MybbLOGGER
     try
     {
       logback.info("createLogFile calling PlugInUtil.getLogDirectory");
-      this.logsDirectory = PlugInUtil.getLogDirectory("bbdn", "bbloggerb2");
+      this.logsDirectory = PlugInUtil.getLogDirectory("bbdn", "bbloggerb2");   // this.logsDirectory.toString() == this.pluginLogPath??
       logback.info("createLogFile this.logsDirectory String Value:" + this.logsDirectory.toString());
       if (!this.logsDirectory.isDirectory()) {
         logback.info("createLogFile this.logsDirectory.isDirectory was FALSE");
@@ -151,10 +159,17 @@ public class MybbLOGGER
       } else {
         // Nothing here... no more cleanUpLogFiles();
       }
-      logback.info("createLogFile calling() new File("+ this.logsDirectory + "/" + this.logName);
-      File logsFile = new File(this.logsDirectory + "/" + this.logName);
+      // 1.5.7 used defineNewFileLog only.  1.5.8+ will use both new File( and defineNewFileLog
+      logback.info("createLogFile calling() new File("+ this.logsDirectory + File.separator + this.logName); // 1.6.0 using File.separator
+      File logsFile = new File(this.logsDirectory + File.separator + this.logName);
+
       logback.info("createLogFile() calling LogService.defineNewFileLog with logName:" + this.logName + " and logFilePath:" +logsFile.toString());
-      LOGGER.defineNewFileLog(this.logName, logsFile.toString(), LogService.Verbosity.DEBUG, false);
+      LOGSERVICE.defineNewFileLog(this.logName, logsFile.toString(), LogService.Verbosity.DEBUG, false);
+      
+      // The logFilePath parameter is the full path to the log file, not just the path. 1.5.7 code follows
+      // String fullPathToLog = this.logsDirectory.getAbsolutePath()+ "/" +this.logName;
+      // logback.info("createLogFile() calling LogService.defineNewFileLog with logName:" +this.logName + " and fullPathToLog:"+ fullPathToLog );
+      // LOGSERVICE.defineNewFileLog(this.logName, fullPathToLog, LogService.Verbosity.DEBUG, false);
     }
     catch (Exception e)
     {
