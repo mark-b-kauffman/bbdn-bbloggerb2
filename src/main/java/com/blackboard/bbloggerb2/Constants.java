@@ -11,10 +11,10 @@ package com.blackboard.bbloggerb2;
  *     notice, this list of conditions and the following disclaimer in the
  *     documentation and/or other materials provided with the distribution.
  *
- *  -- Neither the name of Blackboard Inc. nor the names of its contributors 
- *     may be used to endorse or promote products derived from this 
+ *  -- Neither the name of Blackboard Inc. nor the names of its contributors
+ *     may be used to endorse or promote products derived from this
  *     software without specific prior written permission.
- *  
+ *
  * THIS SOFTWARE IS PROVIDED BY BLACKBOARD INC ``AS IS'' AND ANY
  * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -58,7 +58,7 @@ public abstract interface Constants
   public static final String KEY_MAP_TYPE_COURSE_GROUP = "group";
   public static final String KEY_MAP_TYPE_MEMBERSHIP = "membership";
   public static final String TAB_TAB_GROUP_NAME_COURSES = "courses";
-  public static final String INCORRECT_DATE_FORMAT = "Changes were not saved. Date format does not conform to the date format specified in ILP Integration configuration.";
+  public static final String INCORRECT_DATE_FORMAT = "Changes were not saved.";
   public static final String DATE_FORMAT_DEFAULT = "MM/dd/yyyy";
   public static final String INCORRECT_DATE_FORMAT_LDA = "The entered date is invalid. Valid format:";
   public static final String INCORRECT_DATE_FORMAT_ED = "The entered date is invalid. Valid format:";
@@ -67,20 +67,8 @@ public abstract interface Constants
   public static final String MSG_SUCCESS_MIDTERM_GRADES_SUBMITTED = "Grades submitted";
   public static final String MSG_SUCCESS_FINAL_GRADES_SUBMITTED = "Grades submitted";
   public static final String MSG_SUCCESS_LDA_SUBMITTED = "LDA or Never Attended flag has been submitted.";
-  public static final String DISPLAY_CONFIG_IP_PAGE = "dcbbConfigIPDisplayList";
-  public static final String CONFIG_IP_LIST = "dcbbConfigIPList";
-  public static final String DCBB_CONFIG_IP_COMMAND_NAME = "dcbbConfigIP";
-  public static final String DCBB_CONFIG_IP_FIELD_LIST = "fieldsList";
-  public static final String DCBB_CONFIG_IP_TYPE_LIST = "typeList";
-  public static final String DCBB_CONFIG_IP_USER_ID_TYPE_LIST = "userIdTypeList";
-  public static final String DCBB_CONFIG_IP_DATEFORMAT_LIST = "dateFormatList";
-  public static final String DCBB_CONFIG_IP_LOGLEVEL_LIST = "logLevelList";
-  public static final String DCBB_CONFIG_IP_INTEGRATION_LIST = "integrationList";
-  public static final String DCBB_CONFIG_IP_TERM_LIST = "termList";
-  public static final String DCBB_CONFIG_IP_CATEGORY_GRADE_CUT_OFF_TERMS = "categoryGradeCutOffTerms";
-  public static final String DCBB_CONFIG_IP_EXPIRE_LABEL_LIST = "expireLabelList";
-  public static final String DCBB_CONFIG_MAIN_ACTION_URL = "ShowDcbbConfigIP.spring";
-  public static final String DCBB_ACCESS_TOKEN = "34546f646179";
+
+
   public static final String INVALID_DATE_FORMAT = "Invalid Date Format";
   public static final String END_GREATER_THAN_BEGIN = "The Begin date comes after the end date";
   public static final String GRADEBOOK = "GB";

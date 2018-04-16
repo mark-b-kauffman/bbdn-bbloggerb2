@@ -48,7 +48,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class HomeController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
+	// This Logger uses the Logback Logger configured in src/main/resources/logback.xml
+        private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 	
 	/**
 	 * Simply selects the home view to render by returning its name.
@@ -88,7 +89,7 @@ public class HomeController {
         
         @RequestMapping(value = "/learnlog", method = RequestMethod.GET)
 	public String learnlog(Locale locale, Model model) {
-		// MyLogger.info("Using Learn Logger! The client locale is {}.", locale);
+		//This logger.info will log to the Logback logger.
 		logger.info("Welcome home from /learnlog! The client locale is {}.", locale);
 		Date date = new Date();
 		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
@@ -97,6 +98,9 @@ public class HomeController {
 		
 		model.addAttribute("serverTime", formattedDate );
 		
+                // MybbLOGGER logs to the directory and log file configured by the MybbLOGGER class.
+                // MybbLOGGER is using the Learn Java APIs LogService and Log, and logging to the directory
+                // returned by PluginUtil.getLogDirectory()
                 MybbLOGGER.getBbLogger().logInfo(formattedDate + "  Info from learnLog" );
                 
 		return "learnlog";
