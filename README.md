@@ -21,3 +21,5 @@ To deploy the B2 to your Learn server, run:
 Example: ./gradlew -Dserver=localhost:9876 deployB2
 
 Home URL Example: https://<hostname>/webapps/bbdn-bbloggerb2-BBLEARN/
+  
+Log to logs/custom and logs/plugins/bbdn-bbloggerb2 Example: https://localhost:9877/webapps/bbdn-bbloggerb2-BBLEARN/learnlog
